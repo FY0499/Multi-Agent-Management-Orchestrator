@@ -25,3 +25,5 @@ Import [workflow.json](./workflow.json) into n8n.
 ## Notes
 
 This is an exported workflow, not a guarantee that it runs without configuration. Verify the model name and provider availability in your n8n instance before use.
+
+<img width="646" height="249" alt="image" src="https://github.com/user-attachments/assets/9bad544e-b50d-477f-8bd3-d28527804f09" />
