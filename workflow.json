@@ -1,3 +1,396 @@
-[
-  "{\n  \"name\": \"My workflow\",\n  \"nodes\": [\n    {\n      \"parameters\": {\n        \"updates\": [\n          \"message\"\n        ],\n        \"additionalFields\": {}\n      },\n      \"type\": \"n8n-nodes-base.telegramTrigger\",\n      \"typeVersion\": 1.5,\n      \"position\": [\n        0,\n        400\n      ],\n      \"id\": \"c4f13496-3f99-4d65-8c5c-ea91b4351e79\",\n      \"name\": \"Telegram Trigger\",\n      \"webhookId\": \"8c570d09-44b9-4105-908f-4284180de45c\",\n      \"credentials\": {\n        \"telegramApi\": {\n          \"id\": \"61a0UZm9IJmhQsDP\",\n          \"name\": \"Telegram account\"\n        }\n      }\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Manager request:  {{ $json.message.text }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the MASTER AI AGENT of a company management system. Understand the manager request. Write a short plan with 4 lines: 1) Problem summary. 2) Task for the Data Agent. 3) Task for the Finance Agent. 4) Task for the HR Agent. Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        224,\n        400\n      ],\n      \"id\": \"77460a6e-df47-4833-9955-1346833a6324\",\n      \"name\": \"AI Agent\"\n    },\n    {\n      \"parameters\": {\n        \"model\": {\n          \"__rl\": true,\n          \"mode\": \"list\",\n          \"value\": \"claude-sonnet-5\",\n          \"cachedResultName\": \"Claude Sonnet 5\"\n        },\n        \"options\": {}\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.lmChatAnthropic\",\n      \"typeVersion\": 1.6,\n      \"position\": [\n        648,\n        232\n      ],\n      \"id\": \"58395011-6193-4dd7-b3a5-d6f068a328cf\",\n      \"name\": \"Anthropic Chat Model\",\n      \"credentials\": {\n        \"anthropicApi\": {\n          \"id\": null,\n          \"name\": \"\",\n          \"__aiGatewayManaged\": true\n        }\n      }\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Manager request: {{ $('Telegram Trigger').item.json.message.text }}\\n\\nMaster plan:{{ $json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the Data Agent. Analyze the numbers, trends and patterns related to the problem. Give 3 short insights. Start with the line: 📊 Data Agent Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        576,\n        0\n      ],\n      \"id\": \"692cd3f7-5e93-4570-8a53-d37ea11bdee2\",\n      \"name\": \"AI Agent1\"\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Manager request: {{ $('Telegram Trigger').item.json.message.text }}\\n\\n\\nMaster plan:{{ $json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the Finance Agent. Analyze costs, expenses, revenue and profit impact. Give 3 short insights. Start with the line: 💰 Finance Agent Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        576,\n        400\n      ],\n      \"id\": \"cf341bd3-ed05-4dfb-8198-0497f2fd88e1\",\n      \"name\": \"AI Agent2\"\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Manager request: {{ $('Telegram Trigger').item.json.message.text }}\\n\\n\\nMaster plan:{{ $json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the HR Agent. Analyze staffing, workload, morale and hiring impact. Give 3 short insights. Start with the line: 👥 HR Agent Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        576,\n        592\n      ],\n      \"id\": \"effccae8-14f9-4590-983f-92ad8c1ed1ca\",\n      \"name\": \"AI Agent3\"\n    },\n    {\n      \"parameters\": {\n        \"numberInputs\": 3\n      },\n      \"type\": \"n8n-nodes-base.merge\",\n      \"typeVersion\": 3.2,\n      \"position\": [\n        928,\n        368\n      ],\n      \"id\": \"b3529163-e8c7-48bc-ae1c-24ae7d14de72\",\n      \"name\": \"Merge\"\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Manager request: {{ $('Telegram Trigger').first().json.message.text }}\\n\\nData report:\\n{{ $('AI Agent1').first().json.output }}\\n\\nFinance report:\\n{{ $('AI Agent2').first().json.output }}\\n\\nHR report:\\n{{ $('AI Agent3').first().json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the MASTER AI AGENT. Read the three department reports and decide what must happen. Start with the line: 🧠 Master Decision. Then give a 2 line decision, then one priority action each for Operations, Sales and Security. Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        1152,\n        384\n      ],\n      \"id\": \"a7d48cb2-3b8f-4950-8932-ab83377fab91\",\n      \"name\": \"AI Agent4\",\n      \"executeOnce\": true\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Master decision:{{ $json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the Operations Agent. Turn the master decision into a concrete action plan with 3 steps, each with an owner and a deadline. Start with the line: 📦 Operations Agent Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        1504,\n        576\n      ],\n      \"id\": \"48af690c-32cb-4231-8d81-76e65892a233\",\n      \"name\": \"AI Agent5\"\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Master decision: {{ $json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the Sales Agent. Turn the master decision into a concrete sales action plan with 3 steps, each with an owner and a deadline. Start with the line: 🛒 Sales Agent Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        1504,\n        96\n      ],\n      \"id\": \"51405fb8-6960-4514-abe4-2517a86e2c87\",\n      \"name\": \"AI Agent6\"\n    },\n    {\n      \"parameters\": {\n        \"promptType\": \"define\",\n        \"text\": \"=Master decision: {{ $json.output }}\",\n        \"options\": {\n          \"systemMessage\": \"You are the Security Agent. Identify risks from the master decision and give 3 protective controls, each with an owner. Start with the line: 🛡️ Security Agent Reply in the same language as the manager message. Keep it under 120 words.\"\n        }\n      },\n      \"type\": \"@n8n/n8n-nodes-langchain.agent\",\n      \"typeVersion\": 3.1,\n      \"position\": [\n        1504,\n        288\n      ],\n      \"id\": \"a4a271c7-cf85-4b60-ac64-654ad154f0f7\",\n      \"name\": \"AI Agent7\"\n    },\n    {\n      \"parameters\": {\n        \"chatId\": \"={{ $('Telegram Trigger').item.json.message.from.id }}\",\n        \"text\": \"={{ $json.output }}\",\n        \"additionalFields\": {}\n      },\n      \"type\": \"n8n-nodes-base.telegram\",\n      \"typeVersion\": 1.2,\n      \"position\": [\n        1856,\n        400\n      ],\n      \"id\": \"242429f7-d7f5-4eec-9b42-3dbe8ddcb361\",\n      \"name\": \"Send a text message\",\n      \"webhookId\": \"0dc721f9-29ce-4600-8149-67280821c23c\",\n      \"credentials\": {\n        \"telegramApi\": {\n          \"id\": \"61a0UZm9IJmhQsDP\",\n          \"name\": \"Telegram account\"\n        }\n      }\n    }\n  ],\n  \"pinData\": {},\n  \"connections\": {\n    \"Telegram Trigger\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"AI Agent\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"Anthropic Chat Model\": {\n      \"ai_languageModel\": [\n        [\n          {\n            \"node\": \"AI Agent\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent1\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent2\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent3\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent4\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent5\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent6\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent7\",\n            \"type\": \"ai_languageModel\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"AI Agent1\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent2\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent3\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent3\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Merge\",\n            \"type\": \"main\",\n            \"index\": 2\n          }\n        ]\n      ]\n    },\n    \"AI Agent1\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Merge\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent2\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Merge\",\n            \"type\": \"main\",\n            \"index\": 1\n          }\n        ]\n      ]\n    },\n    \"Merge\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"AI Agent4\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent4\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"AI Agent5\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent6\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"AI Agent7\",\n            \"type\": \"main\",\n            \"index\": 0\n          },\n          {\n            \"node\": \"Send a text message\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent6\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Send a text message\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent7\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Send a text message\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    },\n    \"AI Agent5\": {\n      \"main\": [\n        [\n          {\n            \"node\": \"Send a text message\",\n            \"type\": \"main\",\n            \"index\": 0\n          }\n        ]\n      ]\n    }\n  },\n  \"active\": false,\n  \"settings\": {\n    \"executionOrder\": \"v1\",\n    \"binaryMode\": \"separate\"\n  },\n  \"versionId\": \"b756f503-cb10-45b6-a18e-aa691e6a166c\",\n  \"meta\": {\n    \"templateCredsSetupCompleted\": true,\n    \"instanceId\": \"bb766294e56f79392fb7c3f41bdf12f02742dc223fc678d2c034018401269105\"\n  },\n  \"nodeGroups\": [],\n  \"id\": \"bqgRoC1nafxIjXYg\",\n  \"tags\": []\n}"
-]
+{
+  "name": "Multi-Agent Management Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        400
+      ],
+      "id": "c4f13496-3f99-4d65-8c5c-ea91b4351e79",
+      "name": "Telegram Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Manager request:  {{ $json.message.text }}",
+        "options": {
+          "systemMessage": "You are the MASTER AI AGENT of a company management system. Understand the manager request. Write a short plan with 4 lines: 1) Problem summary. 2) Task for the Data Agent. 3) Task for the Finance Agent. 4) Task for the HR Agent. Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        400
+      ],
+      "id": "77460a6e-df47-4833-9955-1346833a6324",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-5",
+          "cachedResultName": "Claude Sonnet 5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.6,
+      "position": [
+        648,
+        232
+      ],
+      "id": "58395011-6193-4dd7-b3a5-d6f068a328cf",
+      "name": "Anthropic Chat Model"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Manager request: {{ $('Telegram Trigger').item.json.message.text }}\n\nMaster plan:{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the Data Agent. Analyze the numbers, trends and patterns related to the problem. Give 3 short insights. Start with the line: 📊 Data Agent Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        576,
+        0
+      ],
+      "id": "692cd3f7-5e93-4570-8a53-d37ea11bdee2",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Manager request: {{ $('Telegram Trigger').item.json.message.text }}\n\n\nMaster plan:{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the Finance Agent. Analyze costs, expenses, revenue and profit impact. Give 3 short insights. Start with the line: 💰 Finance Agent Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        576,
+        400
+      ],
+      "id": "cf341bd3-ed05-4dfb-8198-0497f2fd88e1",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Manager request: {{ $('Telegram Trigger').item.json.message.text }}\n\n\nMaster plan:{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the HR Agent. Analyze staffing, workload, morale and hiring impact. Give 3 short insights. Start with the line: 👥 HR Agent Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        576,
+        592
+      ],
+      "id": "effccae8-14f9-4590-983f-92ad8c1ed1ca",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        928,
+        368
+      ],
+      "id": "b3529163-e8c7-48bc-ae1c-24ae7d14de72",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Manager request: {{ $('Telegram Trigger').first().json.message.text }}\n\nData report:\n{{ $('AI Agent1').first().json.output }}\n\nFinance report:\n{{ $('AI Agent2').first().json.output }}\n\nHR report:\n{{ $('AI Agent3').first().json.output }}",
+        "options": {
+          "systemMessage": "You are the MASTER AI AGENT. Read the three department reports and decide what must happen. Start with the line: 🧠 Master Decision. Then give a 2 line decision, then one priority action each for Operations, Sales and Security. Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1152,
+        384
+      ],
+      "id": "a7d48cb2-3b8f-4950-8932-ab83377fab91",
+      "name": "AI Agent4",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Master decision:{{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the Operations Agent. Turn the master decision into a concrete action plan with 3 steps, each with an owner and a deadline. Start with the line: 📦 Operations Agent Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1504,
+        576
+      ],
+      "id": "48af690c-32cb-4231-8d81-76e65892a233",
+      "name": "AI Agent5"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Master decision: {{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the Sales Agent. Turn the master decision into a concrete sales action plan with 3 steps, each with an owner and a deadline. Start with the line: 🛒 Sales Agent Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1504,
+        96
+      ],
+      "id": "51405fb8-6960-4514-abe4-2517a86e2c87",
+      "name": "AI Agent6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Master decision: {{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the Security Agent. Identify risks from the master decision and give 3 protective controls, each with an owner. Start with the line: 🛡️ Security Agent Reply in the same language as the manager message. Keep it under 120 words."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1504,
+        288
+      ],
+      "id": "a4a271c7-cf85-4b60-ac64-654ad154f0f7",
+      "name": "AI Agent7"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1856,
+        400
+      ],
+      "id": "242429f7-d7f5-4eec-9b42-3dbe8ddcb361",
+      "name": "Send a text message"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent4",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent5",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent6",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent7",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent4": {
+      "main": [
+        [
+          {
+            "node": "AI Agent5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent6": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent7": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent5": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {},
+  "nodeGroups": [],
+  "tags": []
+}
