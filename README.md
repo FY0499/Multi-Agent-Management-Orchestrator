@@ -1,15 +1,27 @@
 # Multi-Agent Management Orchestrator
 
-An n8n multi-agent orchestration project concept for routing tasks to specialized agents and coordinating their results.
+An n8n workflow that uses a master AI agent to coordinate specialized agents for company-management requests.
+
+## What it does
+
+1. Receives a manager's request through Telegram.
+2. The master agent creates a short plan.
+3. Data, Finance, and HR agents independently provide insights.
+4. A merge step gathers the reports for the master agent's decision.
+5. Operations, Sales, and Security agents produce follow-up recommendations.
+6. The workflow sends the generated responses to Telegram.
+
+## Workflow file
+
+Import [workflow.json](./workflow.json) into n8n.
 
 ## Setup
-1. Import the workflow JSON once added to this repository.
-2. Configure each agent's model credentials and tool permissions.
-3. Add clear routing rules, failure handling, and human review for consequential actions.
-4. Test each route and fallback path.
 
-## Security and testing
-Keep credentials and private webhook identifiers out of version control. End-to-end testing is not confirmed.
+- Configure a Telegram Trigger and Telegram send-message credential in n8n.
+- Connect a supported chat model credential to the Anthropic Chat Model node, or replace it with a model provider you use.
+- Review the node connections and expressions, then test with a non-sensitive request before activating.
+- The exported workflow does not include credentials. You must configure your own credentials after importing.
 
-## Project status
-This README documents the project scope and setup expectations. The workflow export must be present in the repository before it can be imported; validate the finished workflow in your own n8n instance before relying on it.
+## Notes
+
+This is an exported workflow, not a guarantee that it runs without configuration. Verify the model name and provider availability in your n8n instance before use.
