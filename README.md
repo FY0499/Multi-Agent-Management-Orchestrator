@@ -1,7 +1,5 @@
 # Multi-Agent Management Orchestrator
 
-I built and tested this workflow from start to finish.
-
 I built this n8n workflow to coordinate multiple AI agents and help organize management requests. A main agent receives the request, works with specialized agents, and sends the combined response through Telegram.
 
 <img width="646" height="249" alt="Multi-Agent Management Orchestrator demo" src="https://github.com/user-attachments/assets/9bad544e-b50d-477f-8bd3-d28527804f09" />
