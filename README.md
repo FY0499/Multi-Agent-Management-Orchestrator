@@ -1,29 +1,21 @@
 # Multi-Agent Management Orchestrator
 
-An n8n workflow that uses a master AI agent to coordinate specialized agents for company-management requests.
+I built this n8n workflow to coordinate multiple AI agents and help organize management requests. A main agent receives the request, works with specialized agents, and sends the combined response through Telegram.
 
-## What it does
+<img width="646" height="249" alt="Multi-Agent Management Orchestrator demo" src="https://github.com/user-attachments/assets/9bad544e-b50d-477f-8bd3-d28527804f09" />
 
-1. Receives a manager's request through Telegram.
-2. The master agent creates a short plan.
-3. Data, Finance, and HR agents independently provide insights.
-4. A merge step gathers the reports for the master agent's decision.
-5. Operations, Sales, and Security agents produce follow-up recommendations.
-6. The workflow sends the generated responses to Telegram.
+## How it works
 
-## Workflow file
+1. A manager sends a request through Telegram.
+2. The main AI agent organizes the request and delegates tasks.
+3. Specialized agents work on Data, Finance, HR, Operations, Sales, and Security topics.
+4. Their outputs are brought together to prepare the response.
+5. The workflow sends the result back through Telegram.
 
-Import [workflow.json](./workflow.json) into n8n.
+## Technologies
+
+n8n, AI Agents, Anthropic Chat Model, Telegram, and multi-agent orchestration.
 
 ## Setup
 
-- Configure a Telegram Trigger and Telegram send-message credential in n8n.
-- Connect a supported chat model credential to the Anthropic Chat Model node, or replace it with a model provider you use.
-- Review the node connections and expressions, then test with a non-sensitive request before activating.
-- The exported workflow does not include credentials. You must configure your own credentials after importing.
-
-## Notes
-
-This is an exported workflow, not a guarantee that it runs without configuration. Verify the model name and provider availability in your n8n instance before use.
-
-<img width="646" height="249" alt="image" src="https://github.com/user-attachments/assets/9bad544e-b50d-477f-8bd3-d28527804f09" />
+Import [workflow.json](./workflow.json) into n8n, configure your Telegram credentials and Anthropic model credentials, then review the agent connections and prompts.
