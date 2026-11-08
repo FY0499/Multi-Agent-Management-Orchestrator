@@ -12,6 +12,14 @@ I built this n8n workflow to coordinate multiple AI agents and help organize man
 4. Their outputs are brought together to prepare the response.
 5. The workflow sends the result back through Telegram.
 
+## Main features
+
+- Main AI agent for receiving and organizing management requests.
+- Task delegation to specialized AI agents.
+- Specialized handling across Data, Finance, HR, Operations, Sales, and Security topics.
+- Coordination and consolidation of agent outputs.
+- Telegram-based request submission and response delivery.
+
 ## Technologies
 
 n8n, AI Agents, Anthropic Chat Model, Telegram, and multi-agent orchestration.
